@@ -1,4 +1,8 @@
 package models;
 
-public class GameState {
+public enum GameState {
+
+    IN_PROGRESS,
+    DRAW,
+    SUCCESS,
 }

@@ -45,4 +45,14 @@ public class Cell {
     public void setSymbol(Symbol symbol) {
         this.symbol = symbol;
     }
+
+    public void displayCell(){
+
+        if(cellState == CellState.EMPTY){
+            System.out.println("| - |");
+        }
+        else{
+            System.out.println("| "+ symbol.getSymChar() + " |");
+        }
+    }
 }
