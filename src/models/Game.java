@@ -124,4 +124,97 @@ public class Game {
     }
 
 
+    public void makeMove(){
+
+        Player currentPlayer=players.get(nextPlayerIndex);
+        System.out.println("it's "+currentPlayer.getName()+" move, Please make the move");
+
+        Move move=currentPlayer.makeMove(board);
+
+        if(!validateMove(move)){   // check in down.
+            System.out.println("It's a wrong move, Please make the valid move");
+            return;
+        }
+
+        updateGameState(move,currentPlayer);  // check in down.
+
+        if(checkWinner(move)){ // check in down.
+            winner=currentPlayer;
+            gameState=GameState.SUCCESS;
+
+        }
+
+        else if(moves.size()==board.getSize()*board.getSize()){
+            gameState=GameState.DRAW;
+        }
+
+    }
+
+    public void undoMove(){
+
+        if(moves.isEmpty()){
+            System.out.println("There are no moves to make undo");
+            return;
+        }
+
+        Move lastMove=moves.get(moves.size()-1);
+        moves.remove(moves.size()-1);
+
+        lastMove.getCell().setCellState(CellState.EMPTY);
+        lastMove.setPlayer(null);
+
+        nextPlayerIndex--;
+        nextPlayerIndex=(nextPlayerIndex+players.size())%players.size();
+
+        for(WinningStrategies strategies:winningStrategies){
+            strategies.handleUndo(board,lastMove);
+        }
+
+        gameState=GameState.IN_PROGRESS;
+        setWinner(null);
+
+
+    }
+
+    public boolean validateMove(Move move){
+
+        int row = move.getCell().getRow();
+        int col = move.getCell().getCol();
+
+        if(row<0 || col<0 || row>board.getSize() || col>board.getSize()){
+            return false;
+        }
+
+        return board.getGrid().get(row).get(col).getCellState().equals(CellState.EMPTY);
+
+    }
+
+    public void updateGameState(Move move, Player currentPlayer){
+
+        int row = move.getCell().getRow();
+        int col = move.getCell().getCol();
+
+        Cell cellToChange=board.getGrid().get(row).get(col);
+        cellToChange.setCellState(CellState.FILLED);
+        cellToChange.setSymbol(currentPlayer.getSymbol());
+
+        move.setCell(cellToChange);
+        move.setPlayer(currentPlayer);
+        moves.add(move);
+
+        nextPlayerIndex++;
+        nextPlayerIndex%=players.size();
+    }
+
+    public boolean checkWinner(Move move){
+
+        for(WinningStrategies strategies: winningStrategies){
+            if(strategies.checkWinner(board, move)){
+                return true;
+            }
+        }
+        return false;
+    }
+
+
 }
