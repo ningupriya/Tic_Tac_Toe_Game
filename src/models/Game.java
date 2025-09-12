@@ -181,7 +181,7 @@ public class Game {
         int row = move.getCell().getRow();
         int col = move.getCell().getCol();
 
-        if(row<0 || col<0 || row>board.getSize() || col>board.getSize()){
+        if(row<0 || col<0 || row>=board.getSize() || col>=board.getSize()){
             return false;
         }
 
