@@ -1,6 +1,7 @@
 import controllers.GameController;
 import models.*;
 import strategies.ColWinningStrategy;
+import strategies.DiagWinningStrategy;
 import strategies.RowWinningStrategy;
 import strategies.WinningStrategies;
 
@@ -34,6 +35,7 @@ public class Client {
         List<WinningStrategies> winningStrategies=new ArrayList<>();
         winningStrategies.add(new RowWinningStrategy());
         winningStrategies.add(new ColWinningStrategy());
+        winningStrategies.add(new DiagWinningStrategy());
 
         // starting the game.
         Game game=gameController.startGame(size, players, winningStrategies);
